@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 req = Request('http://anime1.me/', headers={'User-Agent': 'Mozilla/5.0'})
 soup = BeautifulSoup(urlopen(req).read())
 
-wishlist = ['關於我轉生變成史萊姆這檔事']
+wishlist = ['史萊姆']
 names, status, link = [], [], []
 
 section = soup.find_all('tr')
@@ -23,6 +23,6 @@ for item in names:
 print("\n==============================")
 for item in wishlist:
     for item2 in names:
-        if item == item2:
-            print("最新一集嘅'" + item + "'已經出咗!")
+        if item2.find(item) != -1:
+            print("最新一集嘅'" + item2 + "'已經出咗!")
 print("==============================")
