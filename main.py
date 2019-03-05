@@ -25,7 +25,6 @@ for count in range(1, 20):
 # Write to txt
 text_file = open("output.txt", "w")
 
-
 print("新番列表:")
 text_file.write("新番列表:\n")
 
@@ -40,7 +39,7 @@ for item in names:
             req_inner = Request(link, headers={'User-Agent': 'Mozilla/5.0'})
             soup_inner = BeautifulSoup(urlopen(req_inner).read(), features="lxml")
             vid = soup_inner.find('article').find('iframe').get('src')
-
+            # Write to file
             text_file.write(name + "\n" + stat + "\n" + vid + "\n")
             print(name)
             print(stat)
