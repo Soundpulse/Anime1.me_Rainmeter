@@ -11,7 +11,9 @@ wishlist = text_file.read().split('\n')
 names, status, links = [], [], []
 
 section = soup.find_all('tr')
-for count in range(1, 10):
+
+# Get every anime on the first page
+for count in range(1, 20):
     columns = section[count].find_all('td')
     link = 'http://anime1.me' + columns[0].find('a').get('href')
     name = columns[0].get_text()
@@ -23,21 +25,25 @@ for count in range(1, 10):
 # Write to txt
 text_file = open("output.txt", "w")
 
-print("今日新番:")
-text_file.write("今日新番:\n")
-# for item in names:
-#     text_file.write("   " + item + "\n")
-#     print("   " + item)
 
-for item in wishlist:
-    for item2 in names:
-        if item in item2:
-            name = item2
-            stat = status[names.index(item2)]
-            link = links[names.index(item2)]
-            text_file.write(name + "\n" + stat + "\n" + link + "\n")
+print("新番列表:")
+text_file.write("新番列表:\n")
+
+for item in names:
+    for item2 in wishlist:
+        if (item2 in item) and (item2 != ""):
+            name = item
+            stat = status[names.index(item)]
+            link = links[names.index(item)]
+
+            # Retrieve Video
+            req_inner = Request(link, headers={'User-Agent': 'Mozilla/5.0'})
+            soup_inner = BeautifulSoup(urlopen(req_inner).read(), features="lxml")
+            vid = soup_inner.find('article').find('iframe').get('src')
+
+            text_file.write(name + "\n" + stat + "\n" + vid + "\n")
             print(name)
-            print(link)
-
+            print(stat)
+            print(vid)
 
 text_file.close()
