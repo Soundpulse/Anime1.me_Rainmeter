@@ -1,11 +1,14 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
-req = Request('http://anime1.me/', headers={'User-Agent': 'Mozilla/5.0'})
-soup = BeautifulSoup(urlopen(req).read())
 
-wishlist = ['史萊姆']
-names, status, link = [], [], []
+req = Request('http://anime1.me/', headers={'User-Agent': 'Mozilla/5.0'})
+soup = BeautifulSoup(urlopen(req).read(), features="lxml")
+
+text_file = open("input.txt", "r")
+wishlist = text_file.read().split('\n')
+
+names, status, links = [], [], []
 
 section = soup.find_all('tr')
 for count in range(1, 10):
@@ -15,14 +18,26 @@ for count in range(1, 10):
     stat = columns[1].get_text()
     names.append(name)
     status.append(stat)
+    links.append(link)
+
+# Write to txt
+text_file = open("output.txt", "w")
 
 print("今日新番:")
-for item in names:
-    print("   " + item)
+text_file.write("今日新番:\n")
+# for item in names:
+#     text_file.write("   " + item + "\n")
+#     print("   " + item)
 
-print("\n==============================")
 for item in wishlist:
     for item2 in names:
-        if item2.find(item) != -1:
-            print("最新一集嘅'" + item2 + "'已經出咗!")
-print("==============================")
+        if item in item2:
+            name = item2
+            stat = status[names.index(item2)]
+            link = links[names.index(item2)]
+            text_file.write(name + "\n" + stat + "\n" + link + "\n")
+            print(name)
+            print(link)
+
+
+text_file.close()
